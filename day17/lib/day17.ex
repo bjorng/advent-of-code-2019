@@ -6,18 +6,9 @@ defmodule Day17 do
     find_intersections(set)
   end
 
-  # Find the path for the robot
-  def find_path(input) do
-    grid = read_grid(input)
-    map = make_map(String.split(grid, "\n"))
-    {pos, dir} = Map.fetch!(map, :robot)
-    path_finder = PathFinder.new(pos, dir, map)
-    path = PathFinder.find_paths(path_finder)
-    PathFinder.make_path(path, path_finder)
-  end
-
   def part2(input) do
-    operate_robot(input)
+    path = find_path(input)
+    operate_robot(input, path)
   end
 
   # Part 1 helpers
@@ -43,10 +34,20 @@ defmodule Day17 do
 
   # Part 2 helpers
 
-  defp operate_robot(program) do
+  # Find the path for the robot
+  defp find_path(input) do
+    grid = read_grid(input)
+    map = make_map(String.split(grid, "\n"))
+    {pos, dir} = Map.fetch!(map, :robot)
+    path_finder = PathFinder.new(pos, dir, map)
+    path = PathFinder.find_paths(path_finder)
+    PathFinder.make_path(path, path_finder)
+  end
+
+  defp operate_robot(program, path) do
     memory = Intcode.new(program)
     memory = Map.put(memory, 0, 2)
-    robot_program = robot_program()
+    robot_program = robot_program(path)
     memory = Intcode.execute(memory)
     send_commands(robot_program, memory)
   end
@@ -67,12 +68,8 @@ defmodule Day17 do
     List.last(output)
   end
 
-  defp robot_program() do
-    ['A,B,A,C,B,C,A,B,A,C\n',
-     'R,10,L,8,R,10,R,4\n',
-     'L,6,L,6,R,10\n',
-     'L,6,R,12,R,12,R,10\n',
-     'n\n']
+  defp robot_program(path) do
+    Splitter.split(path) ++ ['n\n']
   end
 
   defp read_grid(program) do
@@ -116,6 +113,94 @@ defmodule Day17 do
       end)
     end)
   end
+end
+
+defmodule Splitter do
+  def split(prog) do
+    main = pair(String.split(prog, ","))
+    {:done, main, sub_progs} = split_program(main, ?A)
+    [Enum.intersperse(main, ?\,) |
+     Enum.map(sub_progs, fn sub_prog ->
+       Enum.flat_map(sub_prog, fn {dir, amount} ->
+	 [to_charlist(dir), to_charlist(amount)]
+       end)
+       |> Enum.intersperse(?\,)
+       |> List.flatten
+     end)]
+     |> Enum.map(& &1 ++ '\n')
+  end
+
+  defp pair([dir, amount | tail]) do
+    [{dir, amount} | pair(tail)]
+  end
+  defp pair([]), do: []
+
+  defp split_program(main, sub_prog_id) do
+    find_start(main, sub_prog_id, [])
+  end
+
+  defp find_start([{_,_} | _] = main, sub_prog_id, acc) do
+    build_sub_prog(main, 1, sub_prog_id, acc)
+  end
+  defp find_start([prog | tail], sub_prog_id, acc) do
+    find_start(tail, sub_prog_id, [prog | acc])
+  end
+  defp find_start([], _sub_prog_id, acc) do
+    if length(acc) <= 10 do
+      {:done, Enum.reverse(acc), []}
+    else
+      {:error, :too_long_main_prog}
+    end
+  end
+
+  defp build_sub_prog(main, len, sub_prog_id, acc) when sub_prog_id <= ?C do
+    case take_sub_prog(main, len) do
+      {:error, _} = error ->
+	error
+      sub_prog ->
+	subst_main = subst_sub_prog(main, sub_prog, sub_prog_id)
+	case split_program(subst_main, sub_prog_id + 1) do
+	  {:error, _} ->
+	    # Try to make this sub program longer.
+	    build_sub_prog(main, len + 1, sub_prog_id, acc)
+	  {:done, main, sub_progs} ->
+	    {:done, Enum.reverse(acc, main), [sub_prog | sub_progs]}
+	end
+    end
+  end
+  defp build_sub_prog(_, _, _, _) do
+    # There are already three sub programs. Can't start another.
+    {:error, :too_many_sub_programs}
+  end
+
+  defp take_sub_prog(main, n, acc \\ [])
+  defp take_sub_prog(_main, 0, acc) do
+    case prog_len(acc) > 20 do
+      true -> {:error, :too_long_sub_program}
+      false -> Enum.reverse(acc)
+    end
+  end
+  defp take_sub_prog([{_, _} = head | tail], n, acc) do
+    take_sub_prog(tail, n - 1, [head | acc])
+  end
+  defp take_sub_prog(_, _, _), do: {:error, :sub_prog_cannot_grow}
+
+  defp prog_len(sub_prog, len \\ -1)
+  defp prog_len([{_,num} | tail], len) do
+    prog_len(tail, len + byte_size(num) + 1 + 1)
+  end
+  defp prog_len([], len), do: len
+
+  defp subst_sub_prog([head | tail] = main, sub_prog, sub_prog_id) do
+    case :lists.prefix(sub_prog, main) do
+      true ->
+	main = Enum.drop(main, length(sub_prog))
+	[sub_prog_id | subst_sub_prog(main, sub_prog, sub_prog_id)]
+      false ->
+	[head | subst_sub_prog(tail, sub_prog, sub_prog_id)]
+    end
+  end
+  defp subst_sub_prog([], _, _), do: []
 end
 
 defmodule PathFinder do
