@@ -192,7 +192,7 @@ defmodule Splitter do
   defp prog_len([], len), do: len
 
   defp subst_sub_prog([head | tail] = main, sub_prog, sub_prog_id) do
-    case :lists.prefix(sub_prog, main) do
+    case List.starts_with?(main, sub_prog) do
       true ->
 	main = Enum.drop(main, length(sub_prog))
 	[sub_prog_id | subst_sub_prog(main, sub_prog, sub_prog_id)]
