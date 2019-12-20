@@ -13,55 +13,33 @@ defmodule Day19 do
 
   def part2(input, size) do
     machine = Intcode.new(input)
-    rows(machine)
-    |> Enum.find_value(fn pos -> fits?(pos, size, machine) end)
+    max = size - 1
+    rows(machine, size)
+    |> Enum.find_value(fn {first, row} -> fits?(first, row, max, machine) end)
   end
 
-  defp fits?({first, row}, size, machine) do
-    ur_fits?(first, row, size, machine) and
-    really_fits?(first, row, size, machine)
-  end
-
-  defp really_fits?(col, row, size, machine) do
-    case ur_fits?(col, row, size, machine) do
-      false ->
-	false
-      true ->
-	case ll_fits?(col, row, size, machine) do
-	  true ->
-	    case lr_fits?(col, row, size, machine) do
-	      true ->
-		10_000 * col + row
-	      false ->
-		false
-	    end
-	  false ->
-	    really_fits?(col + 1, row, size, machine)
-	end
+  defp fits?(col, row, max, machine) do
+    # Does the lower right corner fit?
+    if in_beam?(col + max, row, machine) do
+      # Does upper right corner fit?
+      if in_beam?(col + max, row - max, machine) do
+	# Calculate and return the upper left corner.
+	row = row - max
+	true = in_beam?(col, row, machine) # Assertion.
+	10_000 * col + row
+      end
     end
   end
 
-  defp ur_fits?(first, row, size, machine) do
-    in_beam?(first + size - 1, row, machine)
-  end
-
-  defp ll_fits?(first, row, size, machine) do
-    in_beam?(first, row + size - 1, machine)
-  end
-
-  defp lr_fits?(first, row, size, machine) do
-    in_beam?(first + size - 1, row + size - 1, machine)
-  end
-
-  defp rows(machine) do
-    Stream.iterate({0, 10}, & get_row(&1, machine))
+  defp rows(machine, size) do
+    state = get_row({0, size - 1}, machine)
+    Stream.iterate(state, & get_row(&1, machine))
   end
 
   defp get_row({col, row}, machine) do
     row = row + 1
-    first = Enum.find(col..col+100, fn col ->
-      in_beam?(col, row, machine)
-    end)
+    first = Stream.iterate(col, & &1 + 1)
+    |> Enum.find(fn col -> in_beam?(col, row, machine) end)
     {first, row}
   end
 
