@@ -15,8 +15,8 @@ defmodule Day22Test do
   test "part 2 with my examples" do
     assert Day22.brute_solve(example4()) ==
       Day22.lazy_solve(example4())
-    assert Day22.brute_solve(input(), 10_007, 1) ==
-      Day22.lazy_solve(input(), 10_007, 1)
+#    assert Day22.brute_solve(input(), 10_007, 1) ==
+#      Day22.lazy_solve(input(), 10_007, 1)
   end
 
   test "part 2 with my input" do
@@ -61,11 +61,14 @@ defmodule Day22Test do
     """
     deal into new stack
     cut -2
-    cut 8
     deal into new stack
+    cut 8
     cut -4
-    cut 3
-    cut -1
+    deal into new stack
+    cut 333
+    cut -199
+    deal into new stack
+    cut 8
     """
     |> s()
   end

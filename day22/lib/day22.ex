@@ -41,7 +41,7 @@ defmodule Day22 do
     {size - pos - 1, size}
   end
   defp lazy_step({:cut, n}, {pos, size}) do
-    {rem(size + pos - n, size), size}
+    {rem(size + pos + n, size), size}
   end
 
   defp one_step(:deal, deck) do
