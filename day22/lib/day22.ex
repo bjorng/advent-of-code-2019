@@ -15,6 +15,8 @@ defmodule Day22 do
   end
 
   def part2(input) do
+    deck_size = 119315717514047
+    times = 101741582076661
   end
 
   defp one_step(:deal, deck) do
