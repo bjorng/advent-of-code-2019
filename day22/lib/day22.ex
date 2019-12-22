@@ -40,6 +40,11 @@ defmodule Day22 do
   defp lazy_step(:deal, {pos, size}) do
     {size - pos - 1, size}
   end
+  defp lazy_step({:deal, inc}, {target_pos, size}) do
+    from_pos = Stream.iterate(0, & rem(size + &1 + inc, size))
+    |> Enum.find_index(& &1 === target_pos)
+    {from_pos, size}
+  end
   defp lazy_step({:cut, n}, {pos, size}) do
     {rem(size + pos + n, size), size}
   end
