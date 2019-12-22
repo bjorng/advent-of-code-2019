@@ -66,20 +66,17 @@ defmodule Day22 do
     size - pos - 1
   end
   defp lazy_step({:deal, inc}, target_pos, size) do
-    incs_per_cycle = div(size, inc)
-    rem_per_cycle = rem(size, inc)
-    info = {inc * incs_per_cycle, inc, rem_per_cycle, size}
-    backward_deal(target_pos, info, 0)
+    backward_deal(target_pos, inc, size, 0)
   end
   defp lazy_step({:cut, n}, pos, size) do
     rem(size + pos + n, size)
   end
 
-  defp backward_deal(target, {cycle, inc, rem, size} = info, sum) do
+  defp backward_deal(target, inc, size, sum) do
     if rem(inc - rem(sum, inc), inc) === rem(target, inc) do
       div(sum + target, inc)
     else
-      backward_deal(target, info, sum + size)
+      backward_deal(target, inc, size, sum + size)
     end
   end
 
