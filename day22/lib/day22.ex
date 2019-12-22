@@ -44,10 +44,19 @@ defmodule Day22 do
 
   def lazy_solve(input, deck_size \\ 10_007,
     times \\ 1, target \\ @part2_position) do
-    lazy_stream(input, deck_size, target)
+    next = lazy_stream(input, deck_size, target)
     |> Stream.drop(times)
     |> Enum.take(1)
     |> hd
+    next
+#    positive_rem(next + times * (next - @part2_position), deck_size)
+  end
+
+  defp positive_rem(n, s) do
+    case rem(n, s) do
+      r when r < 0 -> positive_rem(n + s, s)
+      r -> r
+    end
   end
 
   defp lazy_stream(input, deck_size, target) do
@@ -69,7 +78,7 @@ defmodule Day22 do
     backward_deal(target_pos, inc, size)
   end
   defp lazy_step({:cut, n}, pos, size) do
-    rem(size + pos + n, size)
+    pos + n
   end
 
   defp backward_deal(target, inc, size) do
@@ -85,7 +94,6 @@ defmodule Day22 do
     if sum === target_rem do
       n
     else
-      IO.inspect {sum, n}
       backward_deal(target_rem, inc, rem_delta, sum + rem_delta, n + 1)
     end
   end
