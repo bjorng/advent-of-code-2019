@@ -16,9 +16,11 @@ defmodule Day22 do
   def part2(input) do
     deck_size = 119315717514047
     times = 101741582076661
+    lazy_solve(input, deck_size, 1)
   end
 
   @part2_position 2020
+
   def brute_solve(input, deck_size \\ 10_007,
     times \\ 1, target \\ @part2_position) do
     input = parse_input(input)
