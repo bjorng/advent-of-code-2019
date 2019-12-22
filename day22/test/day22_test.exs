@@ -21,8 +21,12 @@ defmodule Day22Test do
       Day22.lazy_solve(example3())
     assert Day22.lazy_solve(input(), 10_007, 1) == 3115
     assert Day22.lazy_solve(input(), 10_007, 5) == 8727
+    assert Day22.lazy_solve(input(), 10_007, 20) == 7007
+    assert Day22.lazy_solve(input(), 10_007, 50) == 8763
 #    assert Day22.brute_solve(input(), 10_007, 1) == 3115
 #    assert Day22.brute_solve(input(), 10_007, 5) == 8727
+#    assert Day22.brute_solve(input(), 10_007, 20) == 7007
+#    assert Day22.brute_solve(input(), 10_007, 50) == 8763
   end
 
   test "part 2 with my input" do
