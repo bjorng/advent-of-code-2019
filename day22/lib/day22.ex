@@ -49,14 +49,6 @@ defmodule Day22 do
     |> Enum.take(1)
     |> hd
     next
-#    positive_rem(next + times * (next - @part2_position), deck_size)
-  end
-
-  defp positive_rem(n, s) do
-    case rem(n, s) do
-      r when r < 0 -> positive_rem(n + s, s)
-      r -> r
-    end
   end
 
   defp lazy_stream(input, deck_size, target) do
