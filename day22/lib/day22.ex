@@ -66,17 +66,24 @@ defmodule Day22 do
     size - pos - 1
   end
   defp lazy_step({:deal, inc}, target_pos, size) do
-    backward_deal(target_pos, inc, size, 0)
+#    IO.inspect({size, inc, rem(size, inc), rem(target_pos, inc)})
+    backward_deal(target_pos, inc, size)
   end
   defp lazy_step({:cut, n}, pos, size) do
     rem(size + pos + n, size)
   end
 
-  defp backward_deal(target, inc, size, sum) do
-    if rem(inc - rem(sum, inc), inc) === rem(target, inc) do
-      div(sum + target, inc)
+  defp backward_deal(target, inc, size) do
+    sum = backward_deal(rem(inc - rem(target, inc), inc), inc, size, 0)
+    div(sum + target, inc)
+  end
+
+  defp backward_deal(target_mod, inc, size, sum) do
+#    IO.inspect({inc - rem(sum, inc), rem(target, inc)})
+    if rem(sum, inc) === target_mod do
+      sum
     else
-      backward_deal(target, inc, size, sum + size)
+      backward_deal(target_mod, inc, size, sum + size)
     end
   end
 
