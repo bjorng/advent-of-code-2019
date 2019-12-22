@@ -85,6 +85,7 @@ defmodule Day22 do
     if sum === target_rem do
       n
     else
+      IO.inspect {sum, n}
       backward_deal(target_rem, inc, rem_delta, sum + rem_delta, n + 1)
     end
   end
