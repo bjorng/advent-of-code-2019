@@ -33,10 +33,10 @@ defmodule Day22 do
   defp brute_stream(input, deck_size) do
     input = parse_input(input)
     deck = 0..deck_size-1 |> Enum.to_list
-    Stream.iterate(deck, & next_brute(&1, input))
+    Stream.iterate(deck, & next_brute(input, &1))
   end
 
-  defp next_brute(deck, input) do
+  defp next_brute(input, deck) do
     Enum.reduce(input, deck, fn technique, acc ->
       one_step(technique, acc)
     end)
@@ -44,12 +44,21 @@ defmodule Day22 do
 
   def lazy_solve(input, deck_size \\ 10_007,
     times \\ 1, target \\ @part2_position) do
+    lazy_stream(input, deck_size, target)
+    |> Stream.drop(times)
+    |> Enum.take(1)
+  end
+
+  defp lazy_stream(input, deck_size, target) do
     input = parse_input(input)
-    {result, _} = Enum.reverse(input)
-    |> Enum.reduce({target, deck_size}, fn technique, acc ->
+    input = Enum.reverse(input)
+    Stream.iterate({target, deck_size}, & next_lazy(input, &1))
+  end
+
+  defp next_lazy(input, state) do
+    Enum.reduce(input, state, fn technique, acc ->
       lazy_step(technique, acc)
     end)
-    result
   end
 
   defp lazy_step(:deal, {pos, size}) do
