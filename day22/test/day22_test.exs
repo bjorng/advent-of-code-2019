@@ -12,6 +12,11 @@ defmodule Day22Test do
     assert Day22.part1(input()) == 7096
   end
 
+  test "part 2 with my examples" do
+    assert Day22.brute_solve(input(), 10_007, 1) ===
+      Day22.lazy_solve(input(), 10_007, 1)
+  end
+
   test "part 2 with my input" do
     assert Day22.part2(input()) == nil
   end
