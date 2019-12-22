@@ -19,19 +19,21 @@ defmodule Day22 do
   end
 
   @part2_position 2020
-  def brute_solve(input, deck_size \\ 10_007, times \\ 1) do
+  def brute_solve(input, deck_size \\ 10_007,
+    times \\ 1, target \\ @part2_position) do
     input = parse_input(input)
     deck = 0..deck_size-1 |> Enum.to_list
     Enum.reduce(input, deck, fn technique, acc ->
       one_step(technique, acc)
     end)
-    |> Enum.at(@part2_position)
+    |> Enum.at(target)
   end
 
-  def lazy_solve(input, deck_size \\ 10_007, times \\ 1) do
+  def lazy_solve(input, deck_size \\ 10_007,
+    times \\ 1, target \\ @part2_position) do
     input = parse_input(input)
     {result, _} = Enum.reverse(input)
-    |> Enum.reduce({@part2_position, deck_size}, fn technique, acc ->
+    |> Enum.reduce({target, deck_size}, fn technique, acc ->
       lazy_step(technique, acc)
     end)
     result
@@ -41,12 +43,21 @@ defmodule Day22 do
     {size - pos - 1, size}
   end
   defp lazy_step({:deal, inc}, {target_pos, size}) do
-    from_pos = Stream.iterate(0, & rem(size + &1 + inc, size))
-    |> Enum.find_index(& &1 === target_pos)
-    {from_pos, size}
+    incs_per_cycle = div(size, inc)
+    rem_per_cycle = rem(size, inc)
+    info = {inc * incs_per_cycle, inc, rem_per_cycle, size}
+    {backward_deal(target_pos, info, 0), size}
   end
   defp lazy_step({:cut, n}, {pos, size}) do
     {rem(size + pos + n, size), size}
+  end
+
+  defp backward_deal(target, {cycle, inc, rem, size} = info, sum) do
+    if rem(inc - rem(sum, inc), inc) === rem(target, inc) do
+      div(sum + target, inc)
+    else
+      backward_deal(target, info, sum + size)
+    end
   end
 
   defp one_step(:deal, deck) do

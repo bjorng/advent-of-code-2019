@@ -13,10 +13,10 @@ defmodule Day22Test do
   end
 
   test "part 2 with my examples" do
+    assert Day22.brute_solve(example5(), 10, 1, 2) ==
+      Day22.lazy_solve(example5(), 10, 1, 2)
     assert Day22.brute_solve(example4()) ==
       Day22.lazy_solve(example4())
-    assert Day22.brute_solve(example5()) ==
-      Day22.lazy_solve(example5())
     assert Day22.brute_solve(example3()) ==
       Day22.lazy_solve(example3())
     assert Day22.brute_solve(input(), 10_007, 1) ==
