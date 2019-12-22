@@ -64,13 +64,13 @@ defmodule Day22 do
   end
 
   defp lazy_step(:deal, pos, size) do
-    size - pos - 1
+    rem(size + size - pos - 1, size)
   end
   defp lazy_step({:deal, inc}, target_pos, size) do
     backward_deal(target_pos, inc, size)
   end
   defp lazy_step({:cut, n}, pos, size) do
-    pos + n
+    rem(size + pos + n, size)
   end
 
   defp backward_deal(target, inc, size) do
