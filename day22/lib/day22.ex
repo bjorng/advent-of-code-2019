@@ -53,6 +53,7 @@ defmodule Day22 do
 
   defp lazy_stream(input, deck_size, target) do
     input = parse_input(input)
+    input = prepare_lazy_input(input, deck_size)
     input = Enum.reverse(input)
     Stream.iterate(target, & next_lazy(input, deck_size, &1))
   end
@@ -66,28 +67,37 @@ defmodule Day22 do
   defp lazy_step(:deal, pos, size) do
     rem(size + size - pos - 1, size)
   end
-  defp lazy_step({:deal, inc}, target_pos, size) do
-    backward_deal(target_pos, inc, size)
+  defp lazy_step({:deal, inc, deal_map}, target, size) do
+    target_rem = rem(inc - rem(target, inc), inc)
+    n = Map.fetch!(deal_map, target_rem)
+    div(n * size + target, inc)
   end
   defp lazy_step({:cut, n}, pos, size) do
     rem(size + pos + n, size)
   end
 
-  defp backward_deal(target, inc, size) do
-    rem_delta = rem(size, inc)
-    n = backward_deal(rem(inc - rem(target, inc), inc), inc, rem_delta, 0, 0)
-    div(n * size + target, inc)
+  defp prepare_lazy_input([{:deal, inc} | input], deck_size) do
+    [{:deal, inc, make_deal_map(inc, deck_size)} |
+     prepare_lazy_input(input, deck_size)]
+  end
+  defp prepare_lazy_input([technique | input], deck_size) do
+    [technique | prepare_lazy_input(input, deck_size)]
+  end
+  defp prepare_lazy_input([], _), do: []
+
+  defp make_deal_map(inc, deck_size) do
+    rem_delta = rem(deck_size, inc)
+    make_deal_map(inc, rem_delta, 0, 0, [])
   end
 
-  defp backward_deal(target_rem, inc, rem_delta, sum, n) when sum >= inc do
-    backward_deal(target_rem, inc, rem_delta, rem(sum, inc), n)
+  defp make_deal_map(inc, _rem_delta, _sum, inc, acc) do
+    Map.new(acc)
   end
-  defp backward_deal(target_rem, inc, rem_delta, sum, n) do
-    if sum === target_rem do
-      n
-    else
-      backward_deal(target_rem, inc, rem_delta, sum + rem_delta, n + 1)
-    end
+  defp make_deal_map(inc, rem_delta, sum, n, acc) when sum >= inc do
+    make_deal_map(inc, rem_delta, rem(sum, inc), n, acc)
+  end
+  defp make_deal_map(inc, rem_delta, sum, n, acc) do
+    make_deal_map(inc, rem_delta, sum + rem_delta, n + 1, [{sum, n} | acc])
   end
 
   defp one_step(:deal, deck) do
