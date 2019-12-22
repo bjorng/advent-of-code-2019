@@ -23,12 +23,23 @@ defmodule Day22 do
 
   def brute_solve(input, deck_size \\ 10_007,
     times \\ 1, target \\ @part2_position) do
+    brute_stream(input, deck_size)
+    |> Stream.drop(times)
+    |> Enum.take(1)
+    |> hd
+    |> Enum.at(target)
+  end
+
+  defp brute_stream(input, deck_size) do
     input = parse_input(input)
     deck = 0..deck_size-1 |> Enum.to_list
+    Stream.iterate(deck, & next_brute(&1, input))
+  end
+
+  defp next_brute(deck, input) do
     Enum.reduce(input, deck, fn technique, acc ->
       one_step(technique, acc)
     end)
-    |> Enum.at(target)
   end
 
   def lazy_solve(input, deck_size \\ 10_007,
