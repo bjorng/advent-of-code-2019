@@ -47,31 +47,32 @@ defmodule Day22 do
     lazy_stream(input, deck_size, target)
     |> Stream.drop(times)
     |> Enum.take(1)
+    |> hd
   end
 
   defp lazy_stream(input, deck_size, target) do
     input = parse_input(input)
     input = Enum.reverse(input)
-    Stream.iterate({target, deck_size}, & next_lazy(input, &1))
+    Stream.iterate(target, & next_lazy(input, deck_size, &1))
   end
 
-  defp next_lazy(input, state) do
-    Enum.reduce(input, state, fn technique, acc ->
-      lazy_step(technique, acc)
+  defp next_lazy(input, deck_size, target) do
+    Enum.reduce(input, target, fn technique, acc ->
+      lazy_step(technique, acc, deck_size)
     end)
   end
 
-  defp lazy_step(:deal, {pos, size}) do
-    {size - pos - 1, size}
+  defp lazy_step(:deal, pos, size) do
+    size - pos - 1
   end
-  defp lazy_step({:deal, inc}, {target_pos, size}) do
+  defp lazy_step({:deal, inc}, target_pos, size) do
     incs_per_cycle = div(size, inc)
     rem_per_cycle = rem(size, inc)
     info = {inc * incs_per_cycle, inc, rem_per_cycle, size}
-    {backward_deal(target_pos, info, 0), size}
+    backward_deal(target_pos, info, 0)
   end
-  defp lazy_step({:cut, n}, {pos, size}) do
-    {rem(size + pos + n, size), size}
+  defp lazy_step({:cut, n}, pos, size) do
+    rem(size + pos + n, size)
   end
 
   defp backward_deal(target, {cycle, inc, rem, size} = info, sum) do
