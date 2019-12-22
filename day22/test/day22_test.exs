@@ -13,6 +13,7 @@ defmodule Day22Test do
   end
 
   test "part 2 with my examples" do
+    if false do
     assert Day22.brute_solve(example5(), 10, 1, 2) ==
       Day22.lazy_solve(example5(), 10, 1, 2)
     assert Day22.brute_solve(example4()) ==
@@ -23,6 +24,7 @@ defmodule Day22Test do
       Day22.lazy_solve(input(), 10_007, 1)
     assert Day22.brute_solve(input(), 10_007, 3) ==
       Day22.lazy_solve(input(), 10_007, 3)
+    end
   end
 
   test "part 2 with my input" do
