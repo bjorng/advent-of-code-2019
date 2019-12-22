@@ -18,22 +18,30 @@ defmodule Day22 do
     times = 101741582076661
   end
 
+  @part2_position 2020
   def brute_solve(input, deck_size \\ 10_007, times \\ 1) do
     input = parse_input(input)
     deck = 0..deck_size-1 |> Enum.to_list
     Enum.reduce(input, deck, fn technique, acc ->
       one_step(technique, acc)
     end)
-    |> Enum.at(2020)
+    |> Enum.at(@part2_position)
   end
 
   def lazy_solve(input, deck_size \\ 10_007, times \\ 1) do
     input = parse_input(input)
-    deck = 0..deck_size-1 |> Enum.to_list
-    Enum.reduce(input, deck, fn technique, acc ->
-      one_step(technique, acc)
+    {result, _} = Enum.reverse(input)
+    |> Enum.reduce({@part2_position, deck_size}, fn technique, acc ->
+      lazy_step(technique, acc)
     end)
-    |> Enum.at(2020)
+    result
+  end
+
+  defp lazy_step(:deal, {pos, size}) do
+    {size - pos - 1, size}
+  end
+  defp lazy_step({:cut, n}, {pos, size}) do
+    {rem(size + pos - n, size), size}
   end
 
   defp one_step(:deal, deck) do
