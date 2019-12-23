@@ -51,14 +51,6 @@ defmodule Day22 do
     |> positive_rem(deck_size)
   end
 
-  defp solve_target(input, deck_size, target) do
-    lazy_stream(input, deck_size, target)
-    |> Stream.drop(1)
-    |> Enum.take(1)
-    |> hd
-  end
-
-
   defp positive_rem(n, deck_size) do
     n = rem(n, deck_size)
     if n < 0, do: positive_rem(n + deck_size, deck_size), else: n
