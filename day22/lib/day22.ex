@@ -52,45 +52,65 @@ defmodule Day22 do
     zero = solve_one(input, deck_size, 0)
     one = solve_one(input, deck_size, 1)
     diff = positive_rem(one - zero, deck_size)
-    rem(do_lazy_solve(zero, zero, diff, deck_size, times - 1) +
-      mod_int_pow(diff, times, deck_size) * target, deck_size)
+    do_lazy_solve(target, zero, diff, deck_size, times)
   end
 
-  defp do_lazy_solve(prev, _, _, _, 0), do: prev
-  defp do_lazy_solve(prev, zero, diff, deck_size, times) do
-    if rem(times, 10_000_000) === 0 do
+  defp do_lazy_solve(target, _, _, _, 0), do: target
+  defp do_lazy_solve(target, zero, diff, deck_size, times) do
+    if rem(times, 100_000_000) === 0 do
       IO.inspect(times)
     end
-    prev = rem(zero + diff * prev, deck_size)
-    do_lazy_solve(prev, zero, diff, deck_size, times - 1)
+    target = rem(zero + diff * target, deck_size)
+    do_lazy_solve(target, zero, diff, deck_size, times - 1)
   end
 
-  @doc """
-  Raise an integer to a power with modulus.
+  # def lazy_solve(input, deck_size \\ 10_007,
+  #   times \\ 1, target \\ @part2_position) do
+  #   input = parse_input(input)
+  #   input = Enum.reverse(input)
+  #   input = prepare_lazy_input(input, deck_size)
+  #   zero = solve_one(input, deck_size, 0)
+  #   one = solve_one(input, deck_size, 1)
+  #   diff = positive_rem(one - zero, deck_size)
+  #   rem(do_lazy_solve(zero, zero, diff, deck_size, times - 1) +
+  #     mod_int_pow(diff, times, deck_size) * target, deck_size)
+  # end
 
-  ## Examples:
+  # defp do_lazy_solve(prev, _, _, _, 0), do: prev
+  # defp do_lazy_solve(prev, zero, diff, deck_size, times) do
+  #   if rem(times, 10_000_000) === 0 do
+  #     IO.inspect(times)
+  #   end
+  #   prev = rem(zero + diff * prev, deck_size)
+  #   do_lazy_solve(prev, zero, diff, deck_size, times - 1)
+  # end
 
-      iex> Day22.mod_int_pow(7, 2, 10)
-      9
-      iex> Day22.mod_int_pow(7, 3, 10)
-      3
-      iex> Day22.mod_int_pow(7, 5, 13)
-      11
-      iex> Day22.mod_int_pow(53, 13, 777)
-      305
-  """
-  def mod_int_pow(x, p, m, res \\ 1)
-  def mod_int_pow(_, 0, _, res), do: res
-  def mod_int_pow(x, p, m, res) do
-    next_x = x * x
-    next_p = bsr(p, 1)
-    case band(p, 1) do
-      0 ->
-        mod_int_pow(next_x, next_p, m, rem(res, m))
-      1 ->
-        mod_int_pow(next_x, next_p, m, rem(res*x, m))
-    end
-  end
+  # @doc """
+  # Raise an integer to a power with modulus.
+
+  # ## Examples:
+
+  #     iex> Day22.mod_int_pow(7, 2, 10)
+  #     9
+  #     iex> Day22.mod_int_pow(7, 3, 10)
+  #     3
+  #     iex> Day22.mod_int_pow(7, 5, 13)
+  #     11
+  #     iex> Day22.mod_int_pow(53, 13, 777)
+  #     305
+  # """
+  # def mod_int_pow(x, p, m, res \\ 1)
+  # def mod_int_pow(_, 0, _, res), do: res
+  # def mod_int_pow(x, p, m, res) do
+  #   next_x = x * x
+  #   next_p = bsr(p, 1)
+  #   case band(p, 1) do
+  #     0 ->
+  #       mod_int_pow(next_x, next_p, m, rem(res, m))
+  #     1 ->
+  #       mod_int_pow(next_x, next_p, m, rem(res*x, m))
+  #   end
+  # end
 
   defp mod_int_pow
   defp positive_rem(n, deck_size) do
