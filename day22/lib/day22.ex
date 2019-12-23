@@ -14,8 +14,8 @@ defmodule Day22 do
   end
 
   def part2(input) do
-    deck_size = 119315717514047
-    times = 101741582076661
+    deck_size = 119_315_717_514_047
+    times = 101_741_582_076_661
     lazy_solve(input, deck_size, 1)
   end
 
