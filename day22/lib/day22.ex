@@ -44,12 +44,23 @@ defmodule Day22 do
 
   def lazy_solve(input, deck_size \\ 10_007,
     times \\ 1, target \\ @part2_position) do
-    next = lazy_stream(input, deck_size, target)
+    zero_offset = solve_target(input, deck_size, 0)
+    diff = positive_rem(solve_target(input, deck_size, 1) - zero_offset,
+      deck_size)
+    IO.inspect({deck_size, zero_offset, diff, rem(zero_offset + diff * target, deck_size)})
+
+    lazy_stream(input, deck_size, target)
     |> Stream.drop(times)
     |> Enum.take(1)
     |> hd
     |> positive_rem(deck_size)
-    next
+  end
+
+  defp solve_target(input, deck_size, target) do
+    lazy_stream(input, deck_size, target)
+    |> Stream.drop(1)
+    |> Enum.take(1)
+    |> hd
   end
 
   # def test(input) do
