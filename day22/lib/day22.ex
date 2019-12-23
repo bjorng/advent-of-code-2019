@@ -52,6 +52,76 @@ defmodule Day22 do
     next
   end
 
+  # def test(input) do
+  #   [5023, 5039, 5051, 5059, 5077, 5081, 10007]
+  #   |> Enum.each(fn deck_size ->
+  #     same = 0..deck_size - 1
+  #     |> Enum.map(& lazy_solve(input, deck_size, 1, &1))
+  #     |> Stream.with_index
+  #     |> Enum.find_value(fn
+  #       {a, a} -> a
+  #       {_, _} -> nil
+  #     end)
+  #     same-2..same+2
+  #     |> Enum.map(fn target ->
+  #       IO.inspect({deck_size, target, lazy_solve(input, deck_size, 1, target)})
+  #     end)
+  #   end)
+  # end
+
+  # def test(input) do
+  #   deck_size = 5059
+  #   IO.inspect({lazy_solve(input, deck_size, 1, 4029),
+  #               lazy_solve(input, deck_size, 1, 4030),
+  #               lazy_solve(input, deck_size, 1, 4031),
+  #               lazy_solve(input, deck_size, 1, 4032),
+  #               lazy_solve(input, deck_size, 1, 4033)})
+  #   [{x, _}] = 0..deck_size - 1
+  #   |> Enum.map(& lazy_solve(input, deck_size, 1, &1))
+  #   |> Stream.with_index
+  #   |> Enum.filter(fn {a, b} -> a == b end)
+  #   IO.inspect({deck_size,x,find_cycle(input, deck_size)})
+  # end
+
+  # def test(input) do
+  #   deck_size = 5059
+  #   [{x, _}] = 0..deck_size - 1
+  #   |> Enum.map(& lazy_solve(input, deck_size, 1, &1))
+  #   |> Stream.with_index
+  #   |> Enum.filter(fn {a, b} -> a == b end)
+  #   IO.inspect({deck_size,x,find_cycle(input, deck_size)})
+  # end
+
+  def test(input) do
+    deck_size = 5059
+    # 0..deck_size - 1
+    # |> Enum.map(& lazy_solve(input, deck_size, 1, &1))
+    # |> Enum.reduce(0, fn n, prev ->n
+    #   IO.inspect({n, positive_rem(n - prev, deck_size)})
+    #   n
+    # end)
+    # IO.write "\n"
+    # Stream.iterate(0, & rem(&1 + 634, 5059))
+    # |> Stream.drop(1)
+    # |> Enum.find_index(& &1 === 0)
+    # |> IO.inspect
+    lazy_solve(input, deck_size, 1, 0) |> IO.inspect
+    lazy_solve(input, deck_size, 1, 2020) |> IO.inspect
+  end
+
+  def find_cycles(input) do
+    [5023, 5039, 5051, 5059, 5077, 5081, 10007, 30851, 66383, 66403, 66413, 66431, 66449, 72019, 104711, 104717, 104723, 119_315_717_514_047]
+    |> Enum.each(fn prime ->
+      IO.inspect {prime, find_cycle(input, prime)}
+    end)
+  end
+
+  def find_cycle(input, deck_size, target \\ @part2_position) do
+    lazy_stream(input, deck_size, target)
+    |> Stream.drop(1)
+    |> Enum.find_index(& &1 === target)
+  end
+
   defp positive_rem(n, deck_size) do
     n = rem(n, deck_size)
     if n < 0, do: positive_rem(n + deck_size, deck_size), else: n
@@ -70,11 +140,11 @@ defmodule Day22 do
     end)
   end
 
-  defp lazy_step({:cut_deal, n}, pos, _size) do
-    n - pos
+  defp lazy_step({:cut_deal, n}, pos, size) do
+    rem(size + n - pos, size)
   end
-  defp lazy_step({:cut, n}, pos, _size) do
-    pos + n
+  defp lazy_step({:cut, n}, pos, size) do
+    rem(size + pos + n, size)
   end
   defp lazy_step({:deal, inc, deal_map}, target, size) do
     target_rem = rem(inc - rem(target, inc), inc)

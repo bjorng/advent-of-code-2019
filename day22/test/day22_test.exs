@@ -13,6 +13,8 @@ defmodule Day22Test do
   end
 
   test "part 2 with my examples" do
+    Day22.test(input())
+    Day22.find_cycles(input())
     assert Day22.brute_solve(example5(), 10, 1, 2) ==
       Day22.lazy_solve(example5(), 10, 1, 2)
     assert Day22.brute_solve(example4()) ==
