@@ -3,7 +3,7 @@ defmodule Day22 do
     input = parse_input(input)
     deck = 0..deck_size-1 |> Enum.to_list
     deck = Enum.reduce(input, deck, fn technique, acc ->
-      one_step(technique, acc)
+      one_step(technique, acc, deck_size)
     end)
     case deck_size do
       10_007 ->
@@ -33,12 +33,12 @@ defmodule Day22 do
   defp brute_stream(input, deck_size) do
     input = parse_input(input)
     deck = 0..deck_size-1 |> Enum.to_list
-    Stream.iterate(deck, & next_brute(input, &1))
+    Stream.iterate(deck, & next_brute(input, &1, deck_size))
   end
 
-  defp next_brute(input, deck) do
+  defp next_brute(input, deck, deck_size) do
     Enum.reduce(input, deck, fn technique, acc ->
-      one_step(technique, acc)
+      one_step(technique, acc, deck_size)
     end)
   end
 
@@ -100,17 +100,16 @@ defmodule Day22 do
     make_deal_map(inc, rem_delta, sum + rem_delta, n + 1, [{sum, n} | acc])
   end
 
-  defp one_step(:deal, deck) do
+  defp one_step(:deal, deck, _deck_size) do
     Enum.reverse(deck)
   end
-  defp one_step({:deal, inc}, deck) do
-    deck_size = Enum.count(deck)
+  defp one_step({:deal, inc}, deck, deck_size) do
     {numbered, _} = Enum.map_reduce(deck, 0, fn card, index ->
       {{rem(index, deck_size), card}, index + inc}
     end)
     Enum.sort(numbered) |> Enum.map(fn {_, card} -> card end)
   end
-  defp one_step({:cut, n}, deck) do
+  defp one_step({:cut, n}, deck, _deck_size) do
     {first, rest} = Enum.split(deck, n)
     rest ++ first
   end
