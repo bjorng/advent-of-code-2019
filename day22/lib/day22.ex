@@ -50,13 +50,13 @@ defmodule Day22 do
     zero = solve_one(input, deck_size, 0)
     one = solve_one(input, deck_size, 1)
     diff = positive_rem(one - zero, deck_size)
-    do_lazy_solve(target, zero, diff, deck_size, times)
+    rem(do_lazy_solve(target, zero, diff, times), deck_size)
   end
 
-  defp do_lazy_solve(target, _zero, _diff, _deck_size, 0), do: target
-  defp do_lazy_solve(target, zero, diff, deck_size, times) do
-    target = rem(zero + diff * target, deck_size)
-    do_lazy_solve(target, zero, diff, deck_size, times - 1)
+  defp do_lazy_solve(target, _zero, _diff, 0), do: target
+  defp do_lazy_solve(target, zero, diff, times) do
+    target = zero + diff * target
+    do_lazy_solve(target, zero, diff, times - 1)
   end
 
   defp positive_rem(n, deck_size) do
