@@ -1,4 +1,6 @@
 defmodule Day22 do
+  use Bitwise
+
   def part1(input, deck_size \\ 10_007) do
     input = parse_input(input)
     deck = 0..deck_size-1 |> Enum.to_list
@@ -16,7 +18,7 @@ defmodule Day22 do
   def part2(input) do
     deck_size = 119_315_717_514_047
     times = 101_741_582_076_661
-    lazy_solve(input, deck_size, 1)
+    lazy_solve(input, deck_size, times)
   end
 
   @part2_position 2020
@@ -50,15 +52,46 @@ defmodule Day22 do
     zero = solve_one(input, deck_size, 0)
     one = solve_one(input, deck_size, 1)
     diff = positive_rem(one - zero, deck_size)
-    rem(do_lazy_solve(target, zero, diff, times), deck_size)
+    do_lazy_solve(target, zero, diff, deck_size, times)
   end
 
-  defp do_lazy_solve(target, _zero, _diff, 0), do: target
-  defp do_lazy_solve(target, zero, diff, times) do
-    target = zero + diff * target
-    do_lazy_solve(target, zero, diff, times - 1)
+  defp do_lazy_solve(target, _, _, _, 0), do: target
+  defp do_lazy_solve(target, zero, diff, deck_size, times) do
+    if rem(times, 10_000_000) === 0 do
+      IO.inspect(times)
+    end
+    target = rem(zero + diff * target, deck_size)
+    do_lazy_solve(target, zero, diff, deck_size, times - 1)
   end
 
+  @doc """
+  Raise an integer to a power with modulus.
+
+  ## Examples:
+
+      iex> Day22.mod_int_pow(7, 2, 10)
+      9
+      iex> Day22.mod_int_pow(7, 3, 10)
+      3
+      iex> Day22.mod_int_pow(7, 5, 13)
+      11
+      iex> Day22.mod_int_pow(53, 13, 777)
+      305
+  """
+  def mod_int_pow(x, p, m, res \\ 1)
+  def mod_int_pow(_, 0, _, res), do: res
+  def mod_int_pow(x, p, m, res) do
+    next_x = x * x
+    next_p = bsr(p, 1)
+    case band(p, 1) do
+      0 ->
+        mod_int_pow(next_x, next_p, m, rem(res, m))
+      1 ->
+        mod_int_pow(next_x, next_p, m, rem(res*x, m))
+    end
+  end
+
+  defp mod_int_pow
   defp positive_rem(n, deck_size) do
     n = rem(n, deck_size)
     if n < 0, do: positive_rem(n + deck_size, deck_size), else: n
