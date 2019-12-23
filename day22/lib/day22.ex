@@ -70,13 +70,10 @@ defmodule Day22 do
     end)
   end
 
-  defp lazy_step(:deal, pos, size) do
-    - pos - 1
-  end
-  defp lazy_step({:cut_deal, n}, pos, size) do
+  defp lazy_step({:cut_deal, n}, pos, _size) do
     n - pos
   end
-  defp lazy_step({:cut, n}, pos, size) do
+  defp lazy_step({:cut, n}, pos, _size) do
     pos + n
   end
   defp lazy_step({:deal, inc, deal_map}, target, size) do
@@ -90,6 +87,9 @@ defmodule Day22 do
   end
   defp prepare_lazy_input([:deal, {:cut, n} | input], deck_size) do
     [{:cut_deal, n - 1} | prepare_lazy_input(input, deck_size)]
+  end
+  defp prepare_lazy_input([:deal | input], deck_size) do
+    [{:cut_deal, -1} | prepare_lazy_input(input, deck_size)]
   end
   defp prepare_lazy_input([{:deal, inc} | input], deck_size) do
     [{:deal, inc, make_deal_map(inc, deck_size)} |
