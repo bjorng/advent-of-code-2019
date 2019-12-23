@@ -23,6 +23,8 @@ defmodule Day22Test do
       Day22.lazy_solve(example3())
     assert Day22.brute_solve(input(), 14449, 1) == 6814
     assert Day22.lazy_solve(input(), 14449, 1) == 6814
+    assert Day22.brute_solve(input(), 19477, 1) == 7949
+    assert Day22.lazy_solve(input(), 19477, 1) == 7949
 #    assert Day22.brute_solve(input(), 5059, 1) == 1431
 #    assert Day22.lazy_solve(input(), 5059, 1) == 1431
     assert Day22.brute_solve(input(), 10_007, 1) == 3115
