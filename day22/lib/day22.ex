@@ -109,9 +109,14 @@ defmodule Day22 do
     end)
     Enum.sort(numbered) |> Enum.map(fn {_, card} -> card end)
   end
-  defp one_step({:cut, n}, deck, _deck_size) do
-    {first, rest} = Enum.split(deck, n)
-    rest ++ first
+  defp one_step({:cut, n}, deck, deck_size) do
+    if n < 0 do
+      {first, rest} = Enum.split(deck, deck_size + n)
+      rest ++ first
+    else
+      {first, rest} = Enum.split(deck, n)
+      rest ++ first
+    end
   end
 
   defp parse_input(input) do
