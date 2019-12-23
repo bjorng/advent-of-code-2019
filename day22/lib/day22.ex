@@ -48,14 +48,19 @@ defmodule Day22 do
     |> Stream.drop(times)
     |> Enum.take(1)
     |> hd
+    |> positive_rem(deck_size)
     next
+  end
+
+  defp positive_rem(n, deck_size) do
+    n = rem(n, deck_size)
+    if n < 0, do: positive_rem(n + deck_size, deck_size), else: n
   end
 
   defp lazy_stream(input, deck_size, target) do
     input = parse_input(input)
     input = Enum.reverse(input)
     input = prepare_lazy_input(input, deck_size)
-    :io.format("~p\n", [length(input)])
     Stream.iterate(target, & next_lazy(input, deck_size, &1))
   end
 
@@ -66,13 +71,13 @@ defmodule Day22 do
   end
 
   defp lazy_step(:deal, pos, size) do
-    rem(size - pos - 1, size)
-  end
-  defp lazy_step({:cut, n}, pos, size) do
-    rem(size + pos + n, size)
+    - pos - 1
   end
   defp lazy_step({:cut_deal, n}, pos, size) do
-    rem(size + n - pos, size)
+    n - pos
+  end
+  defp lazy_step({:cut, n}, pos, size) do
+    pos + n
   end
   defp lazy_step({:deal, inc, deal_map}, target, size) do
     target_rem = rem(inc - rem(target, inc), inc)
