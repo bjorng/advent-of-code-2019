@@ -46,7 +46,7 @@ defmodule Day22Test do
   end
 
   test "part 2 with my input" do
-#    assert Day22.part2(input()) == nil
+    assert Day22.part2(input()) == nil
   end
 
   defp example1() do

@@ -52,16 +52,17 @@ defmodule Day22 do
     zero = solve_one(input, deck_size, 0)
     one = solve_one(input, deck_size, 1)
     diff = positive_rem(one - zero, deck_size)
-    do_lazy_solve(target, zero, diff, deck_size, times)
+    rem(do_lazy_solve(zero, zero, diff, deck_size, times - 1) +
+      mod_int_pow(diff, times, deck_size) * target, deck_size)
   end
 
-  defp do_lazy_solve(target, _, _, _, 0), do: target
-  defp do_lazy_solve(target, zero, diff, deck_size, times) do
+  defp do_lazy_solve(prev, _, _, _, 0), do: prev
+  defp do_lazy_solve(prev, zero, diff, deck_size, times) do
     if rem(times, 10_000_000) === 0 do
       IO.inspect(times)
     end
-    target = rem(zero + diff * target, deck_size)
-    do_lazy_solve(target, zero, diff, deck_size, times - 1)
+    prev = rem(zero + diff * prev, deck_size)
+    do_lazy_solve(prev, zero, diff, deck_size, times - 1)
   end
 
   @doc """
