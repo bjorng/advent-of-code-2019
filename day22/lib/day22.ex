@@ -55,6 +55,7 @@ defmodule Day22 do
     input = parse_input(input)
     input = Enum.reverse(input)
     input = prepare_lazy_input(input, deck_size)
+    :io.format("~p\n", [length(input)])
     Stream.iterate(target, & next_lazy(input, deck_size, &1))
   end
 
@@ -65,16 +66,13 @@ defmodule Day22 do
   end
 
   defp lazy_step(:deal, pos, size) do
-    rem(size + size - pos - 1, size)
+    rem(size - pos - 1, size)
   end
   defp lazy_step({:cut, n}, pos, size) do
     rem(size + pos + n, size)
   end
   defp lazy_step({:cut_deal, n}, pos, size) do
-    rem(size - pos - 1 - n, size)
-  end
-  defp lazy_step({:deal_cut, n}, pos, size) do
-    rem(size - pos - 1 + n, size)
+    rem(size + n - pos, size)
   end
   defp lazy_step({:deal, inc, deal_map}, target, size) do
     target_rem = rem(inc - rem(target, inc), inc)
@@ -83,10 +81,10 @@ defmodule Day22 do
   end
 
   defp prepare_lazy_input([{:cut, n}, :deal | input], deck_size) do
-    [{:cut_deal, n} | prepare_lazy_input(input, deck_size)]
+    [{:cut_deal, -n - 1} | prepare_lazy_input(input, deck_size)]
   end
   defp prepare_lazy_input([:deal, {:cut, n} | input], deck_size) do
-    [{:deal_cut, n} | prepare_lazy_input(input, deck_size)]
+    [{:cut_deal, n - 1} | prepare_lazy_input(input, deck_size)]
   end
   defp prepare_lazy_input([{:deal, inc} | input], deck_size) do
     [{:deal, inc, make_deal_map(inc, deck_size)} |
