@@ -36,9 +36,10 @@ defmodule Day22Test do
     assert Day22.lazy_solve(input(), 10_007, 50) == 8763
     assert Day22.lazy_solve(input(), 10_007, 100) == 3801
     assert Day22.lazy_solve(input(), 104639, 11) == 79828
-    assert Day22.lazy_solve(input(), 119_315_717_514_047, 1) == 101498718840506
-    assert Day22.lazy_solve(input(), 119_315_717_514_047, 55) == 84400609078784
-    assert Day22.lazy_solve(input(), 119_315_717_514_047, 7777) == 59571543365254
+    # assert Day22.lazy_solve(input(), 119_315_717_514_047, 1) == 101498718840506
+    # assert Day22.lazy_solve(input(), 119_315_717_514_047, 55) == 84400609078784
+    # assert Day22.lazy_solve(input(), 119_315_717_514_047, 7777) == 5957154336525
+    4
 #    assert Day22.brute_solve(input(), 10_007, 5) == 8727
 #    assert Day22.brute_solve(input(), 10_007, 20) == 7007
 #    assert Day22.brute_solve(input(), 10_007, 50) == 8763

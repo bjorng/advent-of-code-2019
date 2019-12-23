@@ -44,11 +44,19 @@ defmodule Day22 do
 
   def lazy_solve(input, deck_size \\ 10_007,
     times \\ 1, target \\ @part2_position) do
-    lazy_stream(input, deck_size, target)
-    |> Stream.drop(times)
-    |> Enum.take(1)
-    |> hd
-    |> positive_rem(deck_size)
+    input = parse_input(input)
+    input = Enum.reverse(input)
+    input = prepare_lazy_input(input, deck_size)
+    zero = solve_one(input, deck_size, 0)
+    one = solve_one(input, deck_size, 1)
+    diff = positive_rem(one - zero, deck_size)
+    do_lazy_solve(target, zero, diff, deck_size, times)
+  end
+
+  defp do_lazy_solve(target, _zero, _diff, _deck_size, 0), do: target
+  defp do_lazy_solve(target, zero, diff, deck_size, times) do
+    target = rem(zero + diff * target, deck_size)
+    do_lazy_solve(target, zero, diff, deck_size, times - 1)
   end
 
   defp positive_rem(n, deck_size) do
@@ -67,14 +75,14 @@ defmodule Day22 do
     zero = solve_one(input, deck_size, 0)
     one = solve_one(input, deck_size, 1)
     diff = positive_rem(one - zero, deck_size)
+    IO.inspect({deck_size, zero, one, diff})
     rem(zero + diff * target, deck_size)
   end
 
   defp solve_one(input, deck_size, target) do
-    Stream.iterate(target, & next_lazy_blurf(input, deck_size, &1))
-    |> Stream.drop(1)
-    |> Enum.take(1)
-    |> hd
+    Enum.reduce(input, target, fn technique, acc ->
+      lazy_step(technique, acc, deck_size)
+    end)
   end
 
   defp next_lazy_blurf(input, deck_size, target) do
