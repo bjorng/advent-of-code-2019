@@ -105,21 +105,10 @@ defmodule Day22 do
   end
   defp one_step({:deal, inc}, deck) do
     deck_size = Enum.count(deck)
-    table = 0..deck_size-1
-    |> Enum.map(& {&1, :empty})
-    |> Map.new
-    Stream.iterate(0, & rem(&1 + inc, deck_size))
-    |> Enum.reduce_while({table, deck}, fn pos, {table, deck} ->
-      case deck do
-        [top | rest] ->
-          {:cont, {Map.put(table, pos, top), rest}}
-        [] ->
-          deck = Map.to_list(table)
-          |> Enum.sort
-          |> Enum.map(& elem(&1, 1))
-          {:halt, deck}
-      end
+    {numbered, _} = Enum.map_reduce(deck, 0, fn card, index ->
+      {{rem(index, deck_size), card}, index + inc}
     end)
+    Enum.sort(numbered) |> Enum.map(fn {_, card} -> card end)
   end
   defp one_step({:cut, n}, deck) do
     {first, rest} = Enum.split(deck, n)
