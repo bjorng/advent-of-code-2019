@@ -285,7 +285,10 @@ defmodule Day22 do
   # end
 
   def test(input) do
-    deck_size = 5059
+    deck_size = 119_315_717_514_047
+    times = 101_741_582_076_661
+    #        42_083_723_319_638
+    #    deck_size = 10007
     # 0..deck_size - 1
     # |> Enum.map(& lazy_solve(input, deck_size, 1, &1))
     # |> Enum.reduce(0, fn n, prev ->n
@@ -297,8 +300,11 @@ defmodule Day22 do
     # |> Stream.drop(1)
     # |> Enum.find_index(& &1 === 0)
     # |> IO.inspect
-    lazy_solve(input, deck_size, 1, 0) |> IO.inspect
-    lazy_solve(input, deck_size, 1, 2020) |> IO.inspect
+    p = div(deck_size - 1, 2)
+    IO.inspect p
+    IO.inspect {div(times, p), rem(times, p)}
+    lazy_solve(input, deck_size, 1) |> IO.inspect
+#    lazy_solve(input, deck_size, p + 1) |> IO.inspect
   end
 
   def find_cycles(input) do
