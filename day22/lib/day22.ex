@@ -44,16 +44,6 @@ defmodule Day22 do
     end)
   end
 
-  def test_input(input) do
-    deck_size = 10_007
-    input = parse_input(input)
-    input = Enum.reverse(input)
-    input = prepare_lazy_input(input, deck_size)
-    zero = solve_one(input, deck_size, 0)
-    next = solve_one(input, deck_size, zero)
-    IO.inspect {zero, next}
-  end
-
   def lazy_solve(input, deck_size \\ 10_007,
     times \\ 1, target \\ @part2_position) do
     result = lazy_solve_v2(input, deck_size, times, target)
@@ -68,39 +58,13 @@ defmodule Day22 do
     zero = solve_one(input, deck_size, 0)
     one = solve_one(input, deck_size, 1)
     diff = positive_rem(one - zero, deck_size)
-    target = do_lazy_solve10(target, zero, diff, deck_size, div(times, 10))
-    do_lazy_solve(target, zero, diff, deck_size, rem(times, 10))
+    do_lazy_solve_v2(target, zero, diff, deck_size, times)
   end
 
-  defp do_lazy_solve(target, _, _, _, 0), do: target
-  defp do_lazy_solve(target, zero, diff, deck_size, times) do
+  defp do_lazy_solve_v2(target, _, _, _, 0), do: target
+  defp do_lazy_solve_v2(target, zero, diff, deck_size, times) do
     target = rem(zero + diff * target, deck_size)
-    do_lazy_solve(target, zero, diff, deck_size, times - 1)
-  end
-
-  defp do_lazy_solve10(target, _, _, _, 0), do: target
-  defp do_lazy_solve10(target, zero, diff, deck_size, times) do
-    target = zero + diff * target
-    target = zero + diff * target
-    target = zero + diff * target
-    target = zero + diff * target
-    target = zero + diff * target
-    target = zero + diff * target
-    target = zero + diff * target
-    target = zero + diff * target
-    target = zero + diff * target
-    target = zero + diff * target
-    target = rem(target, deck_size)
-    do_lazy_solve10(target, zero, diff, deck_size, times - 1)
-  end
-
-  defp do_lazy_solve(prev, _, _, _, 0), do: prev
-  defp do_lazy_solve(prev, zero, diff, deck_size, times) do
-    if rem(times, 10_000_000) === 0 do
-      IO.inspect(times)
-    end
-    prev = rem(zero + diff * prev, deck_size)
-    do_lazy_solve(prev, zero, diff, deck_size, times - 1)
+    do_lazy_solve_v2(target, zero, diff, deck_size, times - 1)
   end
 
   def lazy_solve_v3(input, deck_size \\ 10_007,
@@ -289,100 +253,4 @@ defmodule Day22 do
       end
     end)
   end
-
-  # def test(input) do
-  #   [5023, 5039, 5051, 5059, 5077, 5081, 10007]
-  #   |> Enum.each(fn deck_size ->
-  #     same = 0..deck_size - 1
-  #     |> Enum.map(& lazy_solve(input, deck_size, 1, &1))
-  #     |> Stream.with_index
-  #     |> Enum.find_value(fn
-  #       {a, a} -> a
-  #       {_, _} -> nil
-  #     end)
-  #     same-2..same+2
-  #     |> Enum.map(fn target ->
-  #       IO.inspect({deck_size, target, lazy_solve(input, deck_size, 1, target)})
-  #     end)
-  #   end)
-  # end
-
-  # def test(input) do
-  #   deck_size = 5059
-  #   IO.inspect({lazy_solve(input, deck_size, 1, 4029),
-  #               lazy_solve(input, deck_size, 1, 4030),
-  #               lazy_solve(input, deck_size, 1, 4031),
-  #               lazy_solve(input, deck_size, 1, 4032),
-  #               lazy_solve(input, deck_size, 1, 4033)})
-  #   [{x, _}] = 0..deck_size - 1
-  #   |> Enum.map(& lazy_solve(input, deck_size, 1, &1))
-  #   |> Stream.with_index
-  #   |> Enum.filter(fn {a, b} -> a == b end)
-  #   IO.inspect({deck_size,x,find_cycle(input, deck_size)})
-  # end
-
-  # def test(input) do
-  #   deck_size = 5059
-  #   [{x, _}] = 0..deck_size - 1
-  #   |> Enum.map(& lazy_solve(input, deck_size, 1, &1))
-  #   |> Stream.with_index
-  #   |> Enum.filter(fn {a, b} -> a == b end)
-  #   IO.inspect({deck_size,x,find_cycle(input, deck_size)})
-  # end
-
-  def test(input) do
-    deck_size = 119_315_717_514_047
-    times = 101_741_582_076_661
-    #        42_083_723_319_638
-    #    deck_size = 10007
-    # 0..deck_size - 1
-    # |> Enum.map(& lazy_solve(input, deck_size, 1, &1))
-    # |> Enum.reduce(0, fn n, prev ->n
-    #   IO.inspect({n, positive_rem(n - prev, deck_size)})
-    #   n
-    # end)
-    # IO.write "\n"
-    # Stream.iterate(0, & rem(&1 + 634, 5059))
-    # |> Stream.drop(1)
-    # |> Enum.find_index(& &1 === 0)
-    # |> IO.inspect
-    p = div(deck_size - 1, 2)
-    IO.inspect p
-    IO.inspect {div(times, p), rem(times, p)}
-    lazy_solve(input, deck_size, 1) |> IO.inspect
-#    lazy_solve(input, deck_size, p + 1) |> IO.inspect
-  end
-
-  def find_cycles(input) do
-    [5023, 5039, 5051, 5059, 5077, 5081, 10007, 30851, 66383, 66403, 66413, 66431, 66449, 72019, 104711, 104717, 104723, 119_315_717_514_047]
-    |> Enum.each(fn prime ->
-      IO.inspect {prime, find_cycle(input, prime)}
-    end)
-  end
-
-  def find_cycle(input, deck_size) do
-    target = @part2_position
-    input = parse_input(input)
-    input = Enum.reverse(input)
-    input = prepare_lazy_input(input, deck_size)
-    zero = solve_one(input, deck_size, 0)
-    one = solve_one(input, deck_size, 1)
-    diff = positive_rem(one - zero, deck_size)
-    next = rem(zero + diff * target, deck_size)
-    IO.inspect({zero, diff, next})
-    do_find_cycle(next, zero, diff, deck_size, target, 0)
-  end
-
-  defp do_find_cycle(target, _, _, _, target, n), do: n
-  defp do_find_cycle(next, zero, diff, deck_size, rep, n) do
-    next = rem(zero + diff * next, deck_size)
-    do_find_cycle(next, zero, diff, deck_size, rep, n + 1)
-  end
-
-  # def find_cycle(input, deck_size, target \\ @part2_position) do
-  #   lazy_stream(input, deck_size, target)
-  #   |> Stream.drop(1)
-  #   |> Enum.find_index(& &1 === target)
-  # end
-
 end
