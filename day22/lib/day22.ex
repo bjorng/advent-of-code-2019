@@ -56,6 +56,11 @@ defmodule Day22 do
 
   def lazy_solve(input, deck_size \\ 10_007,
     times \\ 1, target \\ @part2_position) do
+    lazy_solve_v4(input, deck_size, times, target)
+  end
+
+  def lazy_solve_v3(input, deck_size \\ 10_007,
+    times \\ 1, target \\ @part2_position) do
     input = parse_input(input)
     input = Enum.reverse(input)
     input = prepare_lazy_input(input, deck_size)

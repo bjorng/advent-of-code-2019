@@ -15,12 +15,12 @@ defmodule Day22Test do
   test "part 2 with my examples" do
 #    Day22.test(input())
 #    Day22.find_cycles(input())
-    assert Day22.brute_solve(example5(), 10, 1, 2) ==
-      Day22.lazy_solve(example5(), 10, 1, 2)
-    assert Day22.brute_solve(example4()) ==
-      Day22.lazy_solve(example4())
-    assert Day22.brute_solve(example3()) ==
-      Day22.lazy_solve(example3())
+    # assert Day22.brute_solve(example5(), 10, 1, 2) ==
+    #   Day22.lazy_solve(example5(), 10, 1, 2)
+    # assert Day22.brute_solve(example4()) ==
+    #   Day22.lazy_solve(example4())
+    # assert Day22.brute_solve(example3()) ==
+    #   Day22.lazy_solve(example3())
     assert Day22.brute_solve(input(), 14449, 1) == 6814
     assert Day22.brute_solve(input(), 19477, 1) == 7949
 #    assert Day22.brute_solve(input(), 5059, 1) == 1431
