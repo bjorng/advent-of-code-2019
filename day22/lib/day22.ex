@@ -114,7 +114,8 @@ defmodule Day22 do
     # zero * (1 * d^1 + d^2 ... d^(n-1)) + d^n * target
     # zero * ((d^n - 1) / (d - 1)) + d^n * target
     diff_pow_times = mod_int_pow(diff, times, deck_size)
-    res = (diff_pow_times - 1) * mod_inv(diff - 1, deck_size)
+    inv = mod_inv(diff - 1, deck_size)
+    res = rem((diff_pow_times - 1) * inv, deck_size)
     res = zero * res + diff_pow_times * target
     positive_rem(res, deck_size)
   end
@@ -137,7 +138,7 @@ defmodule Day22 do
   def mod_int_pow(x, p, m, res \\ 1)
   def mod_int_pow(_, 0, _, res), do: res
   def mod_int_pow(x, p, m, res) do
-    next_x = x * x
+    next_x = rem(x * x, m)
     next_p = bsr(p, 1)
     case band(p, 1) do
       0 ->

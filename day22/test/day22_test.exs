@@ -46,7 +46,7 @@ defmodule Day22Test do
   end
 
   test "part 2 with my input" do
-#    assert Day22.part2(input()) == nil
+    assert Day22.part2(input()) == 27697279941366
   end
 
   defp example1() do
@@ -79,29 +79,6 @@ defmodule Day22Test do
     deal with increment 9
     deal with increment 3
     cut -1
-    """
-    |> s()
-  end
-
-  defp example4() do
-    """
-    deal into new stack
-    cut -2
-    deal into new stack
-    cut 8
-    cut -4
-    deal into new stack
-    cut 333
-    cut -199
-    deal into new stack
-    cut 8
-    """
-    |> s()
-  end
-
-  defp example5() do
-    """
-    deal with increment 3
     """
     |> s()
   end
