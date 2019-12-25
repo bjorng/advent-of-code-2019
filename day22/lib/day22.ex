@@ -56,16 +56,10 @@ defmodule Day22 do
     input = parse_input(input)
     input = Enum.reverse(input)
     input = prepare_lazy_input(input, deck_size)
-    Stream.iterate(target, & next_lazy_v1(input, deck_size, &1))
+    Stream.iterate(target, & solve_one(input, deck_size, &1))
     |> Stream.drop(times)
     |> Enum.take(1)
     |> hd
-  end
-
-  defp next_lazy_v1(input, deck_size, target) do
-    Enum.reduce(input, target, fn technique, acc ->
-      lazy_step(technique, acc, deck_size)
-    end)
   end
 
   def lazy_solve_v2(input, deck_size \\ 10_007,
