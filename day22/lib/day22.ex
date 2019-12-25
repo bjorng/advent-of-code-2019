@@ -46,8 +46,26 @@ defmodule Day22 do
 
   def lazy_solve(input, deck_size \\ 10_007,
     times \\ 1, target \\ @part2_position) do
-    result = lazy_solve_v2(input, deck_size, times, target)
+    result = lazy_solve_v1(input, deck_size, times, target)
+    ^result = lazy_solve_v2(input, deck_size, times, target)
     ^result = lazy_solve_v3(input, deck_size, times, target)
+  end
+
+  def lazy_solve_v1(input, deck_size \\ 10_007,
+    times \\ 1, target \\ @part2_position) do
+    input = parse_input(input)
+    input = Enum.reverse(input)
+    input = prepare_lazy_input(input, deck_size)
+    Stream.iterate(target, & next_lazy_v1(input, deck_size, &1))
+    |> Stream.drop(times)
+    |> Enum.take(1)
+    |> hd
+  end
+
+  defp next_lazy_v1(input, deck_size, target) do
+    Enum.reduce(input, target, fn technique, acc ->
+      lazy_step(technique, acc, deck_size)
+    end)
   end
 
   def lazy_solve_v2(input, deck_size \\ 10_007,
@@ -151,27 +169,7 @@ defmodule Day22 do
     if n < 0, do: positive_rem(n + deck_size, deck_size), else: n
   end
 
-  defp lazy_stream(input, deck_size, target) do
-    input = parse_input(input)
-    input = Enum.reverse(input)
-    input = prepare_lazy_input(input, deck_size)
-    Stream.iterate(target, & next_lazy(input, deck_size, &1))
-  end
-
-  defp next_lazy(input, deck_size, target) do
-    zero = solve_one(input, deck_size, 0)
-    one = solve_one(input, deck_size, 1)
-    diff = positive_rem(one - zero, deck_size)
-    rem(zero + diff * target, deck_size)
-  end
-
   defp solve_one(input, deck_size, target) do
-    Enum.reduce(input, target, fn technique, acc ->
-      lazy_step(technique, acc, deck_size)
-    end)
-  end
-
-  defp next_lazy_blurf(input, deck_size, target) do
     Enum.reduce(input, target, fn technique, acc ->
       lazy_step(technique, acc, deck_size)
     end)
