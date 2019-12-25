@@ -88,26 +88,30 @@ defmodule Day22 do
     do_lazy_solve10(target, zero, diff, deck_size, times - 1)
   end
 
-  # def lazy_solve(input, deck_size \\ 10_007,
-  #   times \\ 1, target \\ @part2_position) do
-  #   input = parse_input(input)
-  #   input = Enum.reverse(input)
-  #   input = prepare_lazy_input(input, deck_size)
-  #   zero = solve_one(input, deck_size, 0)
-  #   one = solve_one(input, deck_size, 1)
-  #   diff = positive_rem(one - zero, deck_size)
-  #   rem(do_lazy_solve(zero, zero, diff, deck_size, times - 1) +
-  #     mod_int_pow(diff, times, deck_size) * target, deck_size)
-  # end
+  def lazy_solve_v4(input, deck_size \\ 10_007,
+    times \\ 1, target \\ @part2_position) do
+    input = parse_input(input)
+    input = Enum.reverse(input)
+    input = prepare_lazy_input(input, deck_size)
+    zero = solve_one(input, deck_size, 0)
+    one = solve_one(input, deck_size, 1)
+    diff = positive_rem(one - zero, deck_size)
+    # zero * (1 * d^1 + d^2 ... d^(n-1)) + d^n * target
+    # zero * ((d^n - 1) / (d - 1)) + d^n * target
+    diff_pow_times = mod_int_pow(diff, times, deck_size)
+    res = (diff_pow_times - 1) * mod_inv(diff - 1, deck_size)
+    res = zero * res + diff_pow_times * target
+    positive_rem(res, deck_size)
+  end
 
-  # defp do_lazy_solve(prev, _, _, _, 0), do: prev
-  # defp do_lazy_solve(prev, zero, diff, deck_size, times) do
-  #   if rem(times, 10_000_000) === 0 do
-  #     IO.inspect(times)
-  #   end
-  #   prev = rem(zero + diff * prev, deck_size)
-  #   do_lazy_solve(prev, zero, diff, deck_size, times - 1)
-  # end
+  defp do_lazy_solve(prev, _, _, _, 0), do: prev
+  defp do_lazy_solve(prev, zero, diff, deck_size, times) do
+    if rem(times, 10_000_000) === 0 do
+      IO.inspect(times)
+    end
+    prev = rem(zero + diff * prev, deck_size)
+    do_lazy_solve(prev, zero, diff, deck_size, times - 1)
+  end
 
   @doc """
   Raise an integer to a power with modulus.
@@ -143,15 +147,15 @@ defmodule Day22 do
 
   ## Examples:
 
-      iex> Day22.modinv(7, 23)
+      iex> Day22.mod_inv(7, 23)
       10
       iex> rem(div(777, 7), 23)
       19
-      iex> rem(777 * Day22.modinv(7, 23), 23)
+      iex> rem(777 * Day22.mod_inv(7, 23), 23)
       19
   """
 
-  def modinv(a, b) do
+  def mod_inv(a, b) do
     {1, x, _} = egcd(a, b)
     rem(x, b)
   end
