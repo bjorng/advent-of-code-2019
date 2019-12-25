@@ -109,32 +109,67 @@ defmodule Day22 do
   #   do_lazy_solve(prev, zero, diff, deck_size, times - 1)
   # end
 
-  # @doc """
-  # Raise an integer to a power with modulus.
+  @doc """
+  Raise an integer to a power with modulus.
 
-  # ## Examples:
+  ## Examples:
 
-  #     iex> Day22.mod_int_pow(7, 2, 10)
-  #     9
-  #     iex> Day22.mod_int_pow(7, 3, 10)
-  #     3
-  #     iex> Day22.mod_int_pow(7, 5, 13)
-  #     11
-  #     iex> Day22.mod_int_pow(53, 13, 777)
-  #     305
-  # """
-  # def mod_int_pow(x, p, m, res \\ 1)
-  # def mod_int_pow(_, 0, _, res), do: res
-  # def mod_int_pow(x, p, m, res) do
-  #   next_x = x * x
-  #   next_p = bsr(p, 1)
-  #   case band(p, 1) do
-  #     0 ->
-  #       mod_int_pow(next_x, next_p, m, rem(res, m))
-  #     1 ->
-  #       mod_int_pow(next_x, next_p, m, rem(res*x, m))
-  #   end
-  # end
+      iex> Day22.mod_int_pow(7, 2, 10)
+      9
+      iex> Day22.mod_int_pow(7, 3, 10)
+      3
+      iex> Day22.mod_int_pow(7, 5, 13)
+      11
+      iex> Day22.mod_int_pow(53, 13, 777)
+      305
+  """
+
+  def mod_int_pow(x, p, m, res \\ 1)
+  def mod_int_pow(_, 0, _, res), do: res
+  def mod_int_pow(x, p, m, res) do
+    next_x = x * x
+    next_p = bsr(p, 1)
+    case band(p, 1) do
+      0 ->
+        mod_int_pow(next_x, next_p, m, rem(res, m))
+      1 ->
+        mod_int_pow(next_x, next_p, m, rem(res*x, m))
+    end
+  end
+
+  @doc """
+  Return x such that rem(x * a, b) == 1. a and b must
+  be relative primes.
+
+  ## Examples:
+
+      iex> Day22.modinv(7, 23)
+      10
+      iex> rem(div(777, 7), 23)
+      19
+      iex> rem(777 * Day22.modinv(7, 23), 23)
+      19
+  """
+
+  def modinv(a, b) do
+    {1, x, _} = egcd(a, b)
+    rem(x, b)
+  end
+
+  @doc """
+  Extended gcd algorithm.
+
+  ## Examples:
+
+      iex> Day22.egcd(12, 18)
+      {6, -1, 1}
+  """
+
+  def egcd(0, b), do: {b, 0, 1}
+  def egcd(a, b) do
+    {g, s, t} = egcd(rem(b, a), a)
+    {g, t - div(b, a) *s, s}
+  end
 
   defp positive_rem(n, deck_size) do
     n = rem(n, deck_size)

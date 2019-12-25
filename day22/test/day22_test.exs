@@ -13,32 +13,32 @@ defmodule Day22Test do
   end
 
   test "part 2 with my examples" do
-    Day22.test(input())
-    Day22.find_cycles(input())
-#     assert Day22.brute_solve(example5(), 10, 1, 2) ==
-#       Day22.lazy_solve(example5(), 10, 1, 2)
-#     assert Day22.brute_solve(example4()) ==
-#       Day22.lazy_solve(example4())
-#     assert Day22.brute_solve(example3()) ==
-#       Day22.lazy_solve(example3())
-#     assert Day22.brute_solve(input(), 14449, 1) == 6814
-#     assert Day22.brute_solve(input(), 19477, 1) == 7949
-# #    assert Day22.brute_solve(input(), 5059, 1) == 1431
-# #    assert Day22.lazy_solve(input(), 5059, 1) == 1431
-#     assert Day22.brute_solve(input(), 10_007, 1) == 3115
-#     assert Day22.brute_solve(input(), 10_007, 2) == 3470
-#     assert Day22.lazy_solve(input(), 14449, 1) == 6814
-#     assert Day22.lazy_solve(input(), 19477, 1) == 7949
-#     assert Day22.lazy_solve(input(), 10_007, 1) == 3115
-#     assert Day22.lazy_solve(input(), 10_007, 2) == 3470
-#     assert Day22.lazy_solve(input(), 10_007, 5) == 8727
-#     assert Day22.lazy_solve(input(), 10_007, 20) == 7007
-#     assert Day22.lazy_solve(input(), 10_007, 50) == 8763
-#     assert Day22.lazy_solve(input(), 10_007, 100) == 3801
-#     assert Day22.lazy_solve(input(), 104639, 11) == 79828
-#     assert Day22.lazy_solve(input(), 119_315_717_514_047, 1) == 101498718840506
-#     assert Day22.lazy_solve(input(), 119_315_717_514_047, 55) == 84400609078784
-#     assert Day22.lazy_solve(input(), 119_315_717_514_047, 7777) == 59571543365254
+#    Day22.test(input())
+#    Day22.find_cycles(input())
+    assert Day22.brute_solve(example5(), 10, 1, 2) ==
+      Day22.lazy_solve(example5(), 10, 1, 2)
+    assert Day22.brute_solve(example4()) ==
+      Day22.lazy_solve(example4())
+    assert Day22.brute_solve(example3()) ==
+      Day22.lazy_solve(example3())
+    assert Day22.brute_solve(input(), 14449, 1) == 6814
+    assert Day22.brute_solve(input(), 19477, 1) == 7949
+#    assert Day22.brute_solve(input(), 5059, 1) == 1431
+#    assert Day22.lazy_solve(input(), 5059, 1) == 1431
+    assert Day22.brute_solve(input(), 10_007, 1) == 3115
+    assert Day22.brute_solve(input(), 10_007, 2) == 3470
+    assert Day22.lazy_solve(input(), 14449, 1) == 6814
+    assert Day22.lazy_solve(input(), 19477, 1) == 7949
+    assert Day22.lazy_solve(input(), 10_007, 1) == 3115
+    assert Day22.lazy_solve(input(), 10_007, 2) == 3470
+    assert Day22.lazy_solve(input(), 10_007, 5) == 8727
+    assert Day22.lazy_solve(input(), 10_007, 20) == 7007
+    assert Day22.lazy_solve(input(), 10_007, 50) == 8763
+    assert Day22.lazy_solve(input(), 10_007, 100) == 3801
+    assert Day22.lazy_solve(input(), 104639, 11) == 79828
+    assert Day22.lazy_solve(input(), 119_315_717_514_047, 1) == 101498718840506
+    assert Day22.lazy_solve(input(), 119_315_717_514_047, 55) == 84400609078784
+    assert Day22.lazy_solve(input(), 119_315_717_514_047, 7777) == 59571543365254
 #    assert Day22.brute_solve(input(), 10_007, 5) == 8727
 #    assert Day22.brute_solve(input(), 10_007, 20) == 7007
 #    assert Day22.brute_solve(input(), 10_007, 50) == 8763
