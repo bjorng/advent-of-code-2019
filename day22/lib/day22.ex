@@ -24,14 +24,18 @@ defmodule Day22 do
     end
   end
 
+  @part2_position 2020
+
   def part2(input) do
     # Solve part 2 using the fastest solver.
     deck_size = 119_315_717_514_047
     times = 101_741_582_076_661
-    lazy_solve_v3(input, deck_size, times)
-  end
+    card = lazy_solve_v3(input, deck_size, times)
 
-  @part2_position 2020
+    # Test solvers inspired by solutions in the subreddit.
+    input = parse_input(input)
+    ^card = Day22Alt.solve(input, deck_size, times, @part2_position)
+  end
 
   # Solve part 2 using brute force, i.e. by starting with a deck in
   # factory order and iterate the techniques the chosen number of
@@ -62,16 +66,20 @@ defmodule Day22 do
   end
 
   #
-  # Solve the same problem using the all versions of the
+  # Solve the same problem using all versions of the
   # faster solvers and verify that they all return the
   # same result.
   #
 
   def lazy_solve(input, deck_size \\ 10_007,
     times \\ 1, target \\ @part2_position) do
-    result = lazy_solve_v1(input, deck_size, times, target)
-    ^result = lazy_solve_v2(input, deck_size, times, target)
-    ^result = lazy_solve_v3(input, deck_size, times, target)
+    card = lazy_solve_v1(input, deck_size, times, target)
+    ^card = lazy_solve_v2(input, deck_size, times, target)
+    ^card = lazy_solve_v3(input, deck_size, times, target)
+
+    # Test solvers inspired solutions in the subreddit.
+    input = parse_input(input)
+    ^card = Day22Alt.solve(input, deck_size, times, target)
   end
 
   #
@@ -220,7 +228,7 @@ defmodule Day22 do
 
   def mod_inv(a, b) do
     {1, x, _} = egcd(a, b)
-    rem(x, b)
+    rem(b + x, b)
   end
 
   @doc """

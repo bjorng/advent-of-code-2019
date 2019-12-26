@@ -1,6 +1,7 @@
 defmodule Day22Test do
   use ExUnit.Case
   doctest Day22
+  doctest Day22Alt
 
   test "part 1 with my examples" do
     assert Day22.part1(example1(), 10) == [0, 3, 6, 9, 2, 5, 8, 1, 4, 7]
@@ -10,6 +11,16 @@ defmodule Day22Test do
 
   test "part 1 with my input" do
     assert Day22.part1(input()) == 7096
+  end
+
+  defp test_modinv(a, b) do
+    assert Day22.mod_inv(a, b) === Day22Alt.mod_inv(a, b)
+  end
+
+  test "modular multiplicative inverse" do
+    test_modinv(899, 10007)
+    test_modinv(5933, 10007)
+    test_modinv(15000, 10007)
   end
 
   test "part 2 with my examples" do
